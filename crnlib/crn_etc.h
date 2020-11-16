@@ -1,7 +1,9 @@
 // File: crn_etc.h
 // This software is in the public domain. Please see license.txt.
 #pragma once
-#include "../inc/crnlib.h"
+
+#include <crunch/crnlib.h>
+
 #include "crn_dxt.h"
 
 namespace crnlib

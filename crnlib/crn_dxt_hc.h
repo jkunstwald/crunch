@@ -12,7 +12,7 @@
 #include "crn_threading.h"
 
 #define CRN_NO_FUNCTION_DEFINITIONS
-#include "../inc/crnlib.h"
+#include <crunch/crnlib.h>
 
 namespace crnlib
 {

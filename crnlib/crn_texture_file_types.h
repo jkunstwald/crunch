@@ -1,7 +1,7 @@
 // File: crn_texture_file_types.h
 // This software is in the public domain. Please see license.txt.
 #pragma once
-#include "../inc/crnlib.h"
+#include <crunch/crnlib.h>
 #include "crn_vec.h"
 #include "crn_pixel_format.h"
 

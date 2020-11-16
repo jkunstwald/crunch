@@ -1,7 +1,7 @@
 // File: crnlib.cpp
 // This software is in the public domain. Please see license.txt.
 #include "crn_core.h"
-#include "../inc/crnlib.h"
+#include <crunch/crnlib.h>
 #include "crn_comp.h"
 #include "crn_dds_comp.h"
 #include "crn_dynamic_stream.h"
@@ -10,7 +10,7 @@
 #include "crn_etc.h"
 
 #define CRND_HEADER_FILE_ONLY
-#include "../inc/crn_decomp.h"
+#include <crunch/crn_decomp.h>
 
 #include "crn_rg_etc1.h"
 

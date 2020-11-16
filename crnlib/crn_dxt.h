@@ -1,7 +1,9 @@
 // File: crn_dxt.h
 // This software is in the public domain. Please see license.txt.
 #pragma once
-#include "../inc/crnlib.h"
+
+#include <crunch/crnlib.h>
+
 #include "crn_color.h"
 #include "crn_vec.h"
 #include "crn_rand.h"

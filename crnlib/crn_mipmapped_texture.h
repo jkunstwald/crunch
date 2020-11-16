@@ -2,7 +2,7 @@
 // This software is in the public domain. Please see license.txt.
 #pragma once
 #include "crn_dxt_image.h"
-#include "../inc/dds_defs.h"
+#include <crunch/dds_defs.h>
 #include "crn_pixel_format.h"
 #include "crn_image.h"
 #include "crn_resampler.h"

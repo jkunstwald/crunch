@@ -9,7 +9,7 @@
 #include "crn_ktx_texture.h"
 
 #define CRND_HEADER_FILE_ONLY
-#include "../inc/crn_decomp.h"
+#include <crunch/crn_decomp.h>
 
 namespace crnlib
 {

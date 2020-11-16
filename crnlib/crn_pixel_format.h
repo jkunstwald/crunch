@@ -2,8 +2,9 @@
 // This software is in the public domain. Please see license.txt.
 #pragma once
 #include "crn_dxt.h"
-#include "../inc/crnlib.h"
-#include "../inc/dds_defs.h"
+
+#include <crunch/crnlib.h>
+#include <crunch/dds_defs.h>
 
 namespace crnlib
 {

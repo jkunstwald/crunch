@@ -1,11 +1,13 @@
 // File: lzham_timer.cpp
 // This software is in the public domain. Please see license.txt.
-#include "lzham_core.h"
+//#include "lzham_core.h"
 #include "lzham_timer.h"
+
+#include <assert.h>
 
 #ifndef LZHAM_USE_WIN32_API
    #include <time.h>
-#endif   
+#endif
 
 namespace lzham
 {
@@ -72,7 +74,7 @@ namespace lzham
 
    void lzham_timer::stop()
    {
-      LZHAM_ASSERT(m_started);
+      assert(m_started);
                   
       query_counter(&m_stop_time);
       
@@ -81,7 +83,7 @@ namespace lzham
 
    double lzham_timer::get_elapsed_secs() const
    {
-      LZHAM_ASSERT(m_started);
+      assert(m_started);
       if (!m_started)
          return 0;
       
@@ -95,7 +97,7 @@ namespace lzham
 
    timer_ticks lzham_timer::get_elapsed_us() const
    {
-      LZHAM_ASSERT(m_started);
+      assert(m_started);
       if (!m_started)
          return 0;
          

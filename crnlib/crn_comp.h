@@ -3,10 +3,10 @@
 #pragma once
 
 #define CRND_HEADER_FILE_ONLY
-#include "../inc/crn_decomp.h"
+#include <crunch/crn_decomp.h>
 #undef CRND_HEADER_FILE_ONLY
 
-#include "../inc/crnlib.h"
+#include <crunch/crnlib.h>
 #include "crn_symbol_codec.h"
 #include "crn_dxt_hc.h"
 #include "crn_image.h"
