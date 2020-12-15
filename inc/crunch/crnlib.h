@@ -22,6 +22,24 @@
 #define CRNLIB_SUPPORT_ATI_COMPRESS 0
 #define CRNLIB_SUPPORT_SQUISH 0
 
+// CRNLIB_API for DLL linkage
+#ifdef _WIN32
+
+#ifdef CRNLIB_BUILD_DLL
+#ifdef CRNLIB_DLL
+#define CRNLIB_API __declspec(dllexport)
+#else
+#define CRNLIB_API __declspec(dllimport)
+#endif
+#else
+#define CRNLIB_API
+#endif
+
+#else
+#define CRNLIB_API
+#endif
+
+
 typedef unsigned char   crn_uint8;
 typedef unsigned short  crn_uint16;
 typedef unsigned int    crn_uint32;
@@ -369,8 +387,8 @@ enum crn_mip_mode
    cCRNModeForceDWORD = 0xFFFFFFFF
 };
 
-const char* crn_get_mip_mode_desc(crn_mip_mode m);
-const char* crn_get_mip_mode_name(crn_mip_mode m);
+CRNLIB_API const char* crn_get_mip_mode_desc(crn_mip_mode m);
+CRNLIB_API const char* crn_get_mip_mode_name(crn_mip_mode m);
 
 // Mipmap generator's filter kernel.
 enum crn_mip_filter
@@ -386,7 +404,7 @@ enum crn_mip_filter
    cCRNMipFilterForceDWORD = 0xFFFFFFFF
 };
 
-const char* crn_get_mip_filter_name(crn_mip_filter f);
+CRNLIB_API const char* crn_get_mip_filter_name(crn_mip_filter f);
 
 // Mipmap generator's scale mode.
 enum crn_scale_mode
@@ -403,7 +421,7 @@ enum crn_scale_mode
    cCRNSMForceDWORD = 0xFFFFFFFF
 };
 
-const char* crn_get_scale_mode_desc(crn_scale_mode sm);
+CRNLIB_API const char* crn_get_scale_mode_desc(crn_scale_mode sm);
 
 // Mipmap generator parameters.
 struct crn_mipmap_params
@@ -506,10 +524,10 @@ struct crn_mipmap_params
 // By default, crnlib just uses malloc(), free(), etc. for all allocations.
 typedef void*  (*crn_realloc_func)(void* p, size_t size, size_t* pActual_size, bool movable, void* pUser_data);
 typedef size_t (*crn_msize_func)(void* p, void* pUser_data);
-void crn_set_memory_callbacks(crn_realloc_func pRealloc, crn_msize_func pMSize, void* pUser_data);
+CRNLIB_API void crn_set_memory_callbacks(crn_realloc_func pRealloc, crn_msize_func pMSize, void* pUser_data);
 
 // Frees memory blocks allocated by crn_compress(), crn_decompress_crn_to_dds(), or crn_decompress_dds_to_images().
-void crn_free_block(void *pBlock);
+CRNLIB_API void crn_free_block(void *pBlock);
 
 // Compresses a 32-bit/pixel texture to either: a regular DX9 DDS file, a "clustered" (or reduced entropy) DX9 DDS file, or a CRN file in memory.
 // Input parameters:
@@ -529,18 +547,18 @@ void crn_free_block(void *pBlock);
 //  Mipmap levels are simple 32-bit 2D images with a pitch of width*sizeof(uint32), arranged in the usual raster order (top scanline first).
 //  The image pixels may be grayscale (YYYX bytes in memory), grayscale/alpha (YYYA in memory), 24-bit (RGBX in memory), or 32-bit (RGBA) colors (where "X"=don't care).
 //  RGB color data is generally assumed to be in the sRGB colorspace. If not, be sure to clear the "cCRNCompFlagPerceptual" in the crn_comp_params struct!
-void *crn_compress(const crn_comp_params &comp_params, crn_uint32 &compressed_size, crn_uint32 *pActual_quality_level = NULL, float *pActual_bitrate = NULL);
+CRNLIB_API void *crn_compress(const crn_comp_params &comp_params, crn_uint32 &compressed_size, crn_uint32 *pActual_quality_level = NULL, float *pActual_bitrate = NULL);
 
 // Like the above function, except this function can also do things like generate mipmaps, and resize or crop the input texture before compression.
 // The actual operations performed are controlled by the crn_mipmap_params struct members.
 // Be sure to set the "m_gamma_filtering" member of crn_mipmap_params to false if the input texture is not sRGB.
-void *crn_compress(const crn_comp_params &comp_params, const crn_mipmap_params &mip_params, crn_uint32 &compressed_size, crn_uint32 *pActual_quality_level = NULL, float *pActual_bitrate = NULL);
+CRNLIB_API void *crn_compress(const crn_comp_params &comp_params, const crn_mipmap_params &mip_params, crn_uint32 &compressed_size, crn_uint32 *pActual_quality_level = NULL, float *pActual_bitrate = NULL);
 
 // Transcodes an entire CRN file to DDS using the crn_decomp.h header file library to do most of the heavy lifting.
 // The output DDS file's format is guaranteed to be one of the DXTn formats in the crn_format enum.
 // This is a fast operation, because the CRN format is explicitly designed to be efficiently transcodable to DXTn.
 // For more control over decompression, see the lower-level helper functions in crn_decomp.h, which do not depend at all on crnlib.
-void *crn_decompress_crn_to_dds(const void *pCRN_file_data, crn_uint32 &file_size);
+CRNLIB_API void *crn_decompress_crn_to_dds(const void *pCRN_file_data, crn_uint32 &file_size);
 
 // Decompresses an entire DDS file in any supported format to uncompressed 32-bit/pixel image(s).
 // See the crnlib::pixel_format enum in inc/dds_defs.h for a list of the supported DDS formats.
@@ -553,36 +571,36 @@ struct crn_texture_desc
    crn_uint32 m_levels;
    crn_uint32 m_fmt_fourcc; // Same as crnlib::pixel_format
 };
-bool crn_decompress_dds_to_images(const void *pDDS_file_data, crn_uint32 dds_file_size, crn_uint32 **ppImages, crn_texture_desc &tex_desc);
+CRNLIB_API bool crn_decompress_dds_to_images(const void *pDDS_file_data, crn_uint32 dds_file_size, crn_uint32 **ppImages, crn_texture_desc &tex_desc);
 
 // Frees all images allocated by crn_decompress_dds_to_images().
-void crn_free_all_images(crn_uint32 **ppImages, const crn_texture_desc &desc);
+CRNLIB_API void crn_free_all_images(crn_uint32 **ppImages, const crn_texture_desc &desc);
 
 // -------- crn_format related helpers functions.
 
 // Returns the FOURCC format equivalent to the specified crn_format.
-crn_uint32 crn_get_format_fourcc(crn_format fmt);
+CRNLIB_API crn_uint32 crn_get_format_fourcc(crn_format fmt);
 
 // Returns the crn_format's bits per texel.
-crn_uint32 crn_get_format_bits_per_texel(crn_format fmt);
+CRNLIB_API crn_uint32 crn_get_format_bits_per_texel(crn_format fmt);
 
 // Returns the crn_format's number of bytes per block.
-crn_uint32 crn_get_bytes_per_dxt_block(crn_format fmt);
+CRNLIB_API crn_uint32 crn_get_bytes_per_dxt_block(crn_format fmt);
 
 // Returns the non-swizzled, basic DXTn version of the specified crn_format.
 // This is the format you would supply D3D or OpenGL.
-crn_format crn_get_fundamental_dxt_format(crn_format fmt);
+CRNLIB_API crn_format crn_get_fundamental_dxt_format(crn_format fmt);
 
 // -------- String helpers.
 
 // Converts a crn_file_type to a string.
-const char* crn_get_file_type_ext(crn_file_type file_type);
+CRNLIB_API const char* crn_get_file_type_ext(crn_file_type file_type);
 
 // Converts a crn_format to a string.
-const char* crn_get_format_string(crn_format fmt);
+CRNLIB_API const char* crn_get_format_string(crn_format fmt);
 
 // Converts a crn_dxt_quality to a string.
-const char* crn_get_dxt_quality_string(crn_dxt_quality q);
+CRNLIB_API const char* crn_get_dxt_quality_string(crn_dxt_quality q);
 
 // -------- Low-level DXTn 4x4 block compressor API
 
@@ -593,15 +611,15 @@ typedef void *crn_block_compressor_context_t;
 // Create a DXTn block compressor.
 // This function only supports the basic/nonswizzled "fundamental" formats: DXT1, DXT3, DXT5, DXT5A, DXN_XY and DXN_YX.
 // Avoid calling this multiple times if you intend on compressing many blocks, because it allocates some memory.
-crn_block_compressor_context_t crn_create_block_compressor(const crn_comp_params &params);
+CRNLIB_API crn_block_compressor_context_t crn_create_block_compressor(const crn_comp_params &params);
 
 // Compresses a block of 16 pixels to the destination DXTn block.
 // pDst_block should be 8 (for DXT1/DXT5A) or 16 bytes (all the others).
 // pPixels should be an array of 16 crn_uint32's. Each crn_uint32 must be r,g,b,a (r is always first) in memory.
-void crn_compress_block(crn_block_compressor_context_t pContext, const crn_uint32 *pPixels, void *pDst_block);
+CRNLIB_API void crn_compress_block(crn_block_compressor_context_t pContext, const crn_uint32 *pPixels, void *pDst_block);
 
 // Frees a DXTn block compressor.
-void crn_free_block_compressor(crn_block_compressor_context_t pContext);
+CRNLIB_API void crn_free_block_compressor(crn_block_compressor_context_t pContext);
 
 // Unpacks a compressed block to pDst_pixels.
 // pSrc_block should be 8 (for DXT1/DXT5A) or 16 bytes (all the others).
@@ -609,7 +627,7 @@ void crn_free_block_compressor(crn_block_compressor_context_t pContext);
 // crn_fmt should be one of the "fundamental" formats: DXT1, DXT3, DXT5, DXT5A, DXN_XY and DXN_YX.
 // The various swizzled DXT5 formats (such as cCRNFmtDXT5_xGBR, etc.) will be unpacked as if they where plain DXT5.
 // Returns false if the crn_fmt is invalid.
-bool crn_decompress_block(const void *pSrc_block, crn_uint32 *pDst_pixels, crn_format crn_fmt);
+CRNLIB_API bool crn_decompress_block(const void *pSrc_block, crn_uint32 *pDst_pixels, crn_format crn_fmt);
 
 #endif // CRNLIB_H
 
