@@ -655,29 +655,5 @@ typedef bool (*crn_console_funcptr_t)(crn_console_msg_type::e_crn_console_messag
 // If none is set, the console falls back to stdout
 CRNLIB_API void crn_add_console_output(crn_console_funcptr_t pFunc, void *pData);
 
-// Console message verbosity
-struct crn_console_msg_type
-{
-    enum e_crn_console_message_type
-    {
-        cDebugConsoleMessage,    // debugging messages
-        cProgressConsoleMessage, // progress messages
-        cInfoConsoleMessage,     // ordinary messages
-        cConsoleConsoleMessage,  // user console output
-        cMessageConsoleMessage,  // high importance messages
-        cWarningConsoleMessage,  // warnings
-        cErrorConsoleMessage,    // errors
-
-        cCMTTotal
-    };
-};
-
-// Console output callback
-typedef bool (*crn_console_funcptr_t)(crn_console_msg_type::e_crn_console_message_type type, const char *pMsg, void *pData);
-
-// Adds a console output callback to the crunch-internal console
-// If none is set, the console falls back to stdout
-CRNLIB_API void crn_add_console_output(crn_console_funcptr_t pFunc, void *pData);
-
 #endif // CRNLIB_H
 
