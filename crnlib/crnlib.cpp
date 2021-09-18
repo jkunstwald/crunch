@@ -8,6 +8,7 @@
 #include "crn_buffer_stream.h"
 #include "crn_ryg_dxt.hpp"
 #include "crn_etc.h"
+#include "crn_console.h"
 
 #define CRND_HEADER_FILE_ONLY
 #include <crunch/crn_decomp.h>
@@ -457,4 +458,9 @@ bool crn_decompress_block(const void *pSrc_block, crn_uint32 *pDst_pixels_u32, c
    }
 
    return true;
+}
+
+void crn_add_console_output(crn_console_funcptr_t pFunc, void *pData)
+{
+    console::add_console_output_func(reinterpret_cast<console_output_func>(pFunc), pData);
 }
