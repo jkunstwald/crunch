@@ -252,7 +252,7 @@ namespace crnlib
 
    bool task_pool::init(uint num_threads)
    {
-      CRNLIB_ASSERT(num_threads <= cMaxThreads);
+      //CRNLIB_ASSERT(num_threads <= cMaxThreads); CHANGED(JK)
       num_threads = math::minimum<uint>(num_threads, cMaxThreads);
 
       deinit();
