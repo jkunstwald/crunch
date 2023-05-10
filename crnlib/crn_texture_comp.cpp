@@ -281,10 +281,8 @@ namespace crnlib
       return true;
    }
 
-   bool create_texture_mipmaps(mipmapped_texture &work_tex, const crn_comp_params &params, const crn_mipmap_params &mipmap_params, bool generate_mipmaps)
+   bool create_texture_mipmaps(mipmapped_texture &work_tex, const crn_mipmap_params &mipmap_params, bool generate_mipmaps, uint32 num_helper_threads)
    {
-      crn_comp_params new_params(params);
-
       bool generate_new_mips = false;
 
       switch (mipmap_params.m_mode)
@@ -447,7 +445,7 @@ namespace crnlib
          res_params.m_filter_scale = 1.0f;
          res_params.m_gamma = mipmap_params.m_gamma;
          res_params.m_srgb = srgb;
-         res_params.m_multithreaded = (params.m_num_helper_threads > 0);
+         res_params.m_multithreaded = (num_helper_threads > 0);
 
          if (!work_tex.resize(new_width, new_height, res_params))
          {
@@ -469,7 +467,7 @@ namespace crnlib
          gen_params.m_filter_scale = mipmap_params.m_blurriness;
          gen_params.m_gamma = mipmap_params.m_gamma;
          gen_params.m_srgb = srgb;
-         gen_params.m_multithreaded = params.m_num_helper_threads > 0;
+         gen_params.m_multithreaded = num_helper_threads > 0;
          gen_params.m_max_mips = mipmap_params.m_max_levels;
          gen_params.m_min_mip_size = mipmap_params.m_min_mip_size;
 
@@ -503,7 +501,7 @@ namespace crnlib
          return false;
       }
 
-      if (!create_texture_mipmaps(work_tex, params, mipmap_params, true))
+      if (!create_texture_mipmaps(work_tex, mipmap_params, true, params.m_num_helper_threads))
          return false;
 
       crn_comp_params new_params(params);
@@ -515,6 +513,29 @@ namespace crnlib
             new_params.m_pImages[f][l] = (uint32*)work_tex.get_level(f, l)->get_image()->get_ptr();
 
       return create_compressed_texture(new_params, comp_data, pActual_quality_level, pActual_bitrate);
+   }
+
+   bool create_texture_mipmaps_public(const crn_rgba8_texture_data& input, const crn_mipmap_params& mipmap_params, mipmapped_texture &output, uint32 num_helper_threads)
+   {
+       crn_comp_params dummy_params;
+       dummy_params.clear();
+       // these are the only fields read by create_dds_tex
+       dummy_params.m_faces = input.m_faces;
+       dummy_params.m_width = input.m_width;
+       dummy_params.m_height = input.m_height;
+       dummy_params.m_levels = input.m_levels;
+       memcpy(dummy_params.m_pImages, input.m_pImages, sizeof(dummy_params.m_pImages));
+
+       if (!create_dds_tex(dummy_params, output))
+       {
+           console::error("Failed creating DDS texture from crn_rgba8_texture_data!");
+           return false;
+       }
+
+       if (!create_texture_mipmaps(output, mipmap_params, true, num_helper_threads))
+           return false;
+
+       return true;
    }
 
 } // namespace crnlib

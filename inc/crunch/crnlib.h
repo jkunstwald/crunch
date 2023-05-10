@@ -554,6 +554,22 @@ CRNLIB_API void *crn_compress(const crn_comp_params &comp_params, crn_uint32 &co
 // Be sure to set the "m_gamma_filtering" member of crn_mipmap_params to false if the input texture is not sRGB.
 CRNLIB_API void *crn_compress(const crn_comp_params &comp_params, const crn_mipmap_params &mip_params, crn_uint32 &compressed_size, crn_uint32 *pActual_quality_level = NULL, float *pActual_bitrate = NULL);
 
+struct crn_rgba8_texture_data
+{
+    crn_uint32                 m_faces;                   // 1 (2D map) or 6 (cubemap)
+    crn_uint32                 m_width;                   // [1,cCRNMaxLevelResolution], non-power of 2 OK, non-square OK
+    crn_uint32                 m_height;                  // [1,cCRNMaxLevelResolution], non-power of 2 OK, non-square OK
+    crn_uint32                 m_levels;                  // [1,cCRNMaxLevelResolution], non-power of 2 OK, non-square OK
+    crn_uint32*                m_pImages[cCRNMaxFaces][cCRNMaxLevels];
+};
+
+// Only generates mipmaps, returns newly created texture data
+// result must be given to crn_free_generate_mips_res.
+CRNLIB_API crn_rgba8_texture_data crn_generate_mips(const crn_rgba8_texture_data &input_tex, const crn_mipmap_params &mip_params);
+
+// Frees all data allocated by crn_generate_mips().
+CRNLIB_API void crn_free_generate_mips_res(const crn_rgba8_texture_data &res);
+
 // Transcodes an entire CRN file to DDS using the crn_decomp.h header file library to do most of the heavy lifting.
 // The output DDS file's format is guaranteed to be one of the DXTn formats in the crn_format enum.
 // This is a fast operation, because the CRN format is explicitly designed to be efficiently transcodable to DXTn.

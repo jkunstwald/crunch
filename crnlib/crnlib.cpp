@@ -200,6 +200,48 @@ void *crn_compress(const crn_comp_params &comp_params, const crn_mipmap_params &
    return crn_file_data.assume_ownership();
 }
 
+crn_rgba8_texture_data crn_generate_mips(const crn_rgba8_texture_data& input_tex, const crn_mipmap_params& mip_params)
+{
+    crn_rgba8_texture_data res = {};
+
+    if (!mip_params.check())
+        return res;
+
+    mipmapped_texture work_tex;
+    if (!create_texture_mipmaps_public(input_tex, mip_params, work_tex, 2))
+        return res;
+
+    res.m_width = work_tex.get_width();
+    res.m_height = work_tex.get_height();
+    res.m_faces = work_tex.get_num_faces();
+    res.m_levels = work_tex.get_num_levels();
+
+    for (uint f = 0; f < work_tex.get_num_faces(); f++)
+        for (uint l = 0; l < work_tex.get_num_levels(); l++)
+        {
+            mip_level* const p_level = work_tex.get_level(f, l);
+            uint const level_size_bytes = p_level->get_image()->get_size_in_bytes();
+
+            res.m_pImages[f][l] = (uint32*)crnlib_malloc(level_size_bytes);
+            memcpy(res.m_pImages[f][l], p_level->get_image()->get_ptr(), level_size_bytes);
+        }
+    return res;
+}
+
+void crn_free_generate_mips_res(const crn_rgba8_texture_data& res)
+{
+    for (uint32 f = 0; f < cCRNMaxFaces; ++f)
+    {
+        for (uint32 l = 0; l < cCRNMaxLevels; ++l)
+        {
+            if (res.m_pImages[f][l])
+            {
+                crnlib_free(res.m_pImages[f][l]);
+            }
+        }
+    }
+}
+
 void *crn_decompress_crn_to_dds(const void *pCRN_file_data, crn_uint32 &file_size)
 {
    mipmapped_texture tex;

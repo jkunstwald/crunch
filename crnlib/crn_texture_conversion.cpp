@@ -696,7 +696,7 @@ namespace crnlib
             print_mipmap_params(mipmap_params);
          }
 
-         if (!create_texture_mipmaps(work_tex, comp_params, mipmap_params, generate_mipmaps))
+         if (!create_texture_mipmaps(work_tex, mipmap_params, generate_mipmaps, comp_params.m_num_helper_threads))
             return convert_error(params, "Failed creating texture mipmaps!");
 
          bool formats_differ = work_tex.get_format() != dst_format;
