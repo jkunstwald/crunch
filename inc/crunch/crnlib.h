@@ -561,6 +561,8 @@ struct crn_rgba8_texture_data
     crn_uint32                 m_height;                  // [1,cCRNMaxLevelResolution], non-power of 2 OK, non-square OK
     crn_uint32                 m_levels;                  // [1,cCRNMaxLevelResolution], non-power of 2 OK, non-square OK
     crn_uint32*                m_pImages[cCRNMaxFaces][cCRNMaxLevels];
+    crn_uint32                 m_imageSizes[cCRNMaxFaces][cCRNMaxLevels];       // not required in input
+    crn_uint32                 m_imageRowSizes[cCRNMaxFaces][cCRNMaxLevels];    // not required in input
 };
 
 // Only generates mipmaps, returns newly created texture data

@@ -222,8 +222,12 @@ crn_rgba8_texture_data crn_generate_mips(const crn_rgba8_texture_data& input_tex
             mip_level* const p_level = work_tex.get_level(f, l);
             uint const level_size_bytes = p_level->get_image()->get_size_in_bytes();
 
-            res.m_pImages[f][l] = (uint32*)crnlib_malloc(level_size_bytes);
-            memcpy(res.m_pImages[f][l], p_level->get_image()->get_ptr(), level_size_bytes);
+            uint32* p_level_copy = (uint32*)crnlib_malloc(level_size_bytes);
+            memcpy(p_level_copy, p_level->get_image()->get_ptr(), level_size_bytes);
+
+            res.m_imageSizes[f][l] = level_size_bytes;
+            res.m_imageRowSizes[f][l] = p_level->get_image()->get_pitch_in_bytes();
+            res.m_pImages[f][l] = p_level_copy;
         }
     return res;
 }
