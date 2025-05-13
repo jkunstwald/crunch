@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.18)
 project(crunch)
 
 option(CRNLIB_BUILD_DLL "Build Crunch as a shared library (DLL)" OFF)
